@@ -13,6 +13,7 @@
 #include <time.h>
 #include <dirent.h>
 #include <signal.h>
+#include <sys/time.h>
 
 int timeout_happened = 0;
 
@@ -92,6 +93,9 @@ int run_user_program(char *input_path, int errors_fd, int results_fd, DIR* main_
         }
         exit(-1);
     }
+    
+    struct rusage usage;
+    struct timeval start, end;
 
     // now run the c program using child process
     int pid = fork();
@@ -162,35 +166,68 @@ int run_user_program(char *input_path, int errors_fd, int results_fd, DIR* main_
         int status;
 
         //set up alarm
-        signal(SIGALRM, timeout_handler);
-        alarm(5);
+//         signal(SIGALRM, timeout_handler);
+//         alarm(5);
 
-        if (wait(&status) == -1) { // check if child process ended with error
-            close(errors_fd);
-            close(results_fd);
-            closedir(main_dir);
-            close(output_fd);
-            close(input_fd);
-            if (write(1, "Error in: wait\n", 15) == -1) {
+        gettimeofday(&start, NULL);
+        while (1) {
+            pid_t result = waitpid(pid, &status, WNOHANG);
+            if (result == pid) {
+                // Child process has exited
+                gettimeofday(&end, NULL);
+                getrusage(RUSAGE_CHILDREN, &usage);
+                //close the input and output fd's and restore stdin and stdout original fd's
+                close(output_fd);
+                close(input_fd);
+                return 1;
+            } else if (result == 0) {
+                // Child process is still running
+                gettimeofday(&end, NULL);
+                if (end.tv_sec - start.tv_sec > 5) {
+                    // Child process has been running for more than 5
+                    close(output_fd);
+                    close(input_fd);
+                    return -1;
+                }
+            } else { // check if child process ended with error
+                close(errors_fd);
+                close(results_fd);
+                closedir(main_dir);
+                close(output_fd);
+                close(input_fd);
+                if (write(1, "Error in: wait\n", 15) == -1) {
+                    exit(-1);
+                }
                 exit(-1);
             }
-            exit(-1);
         }
+        
+//         if (wait(&status) == -1) { // check if child process ended with error
+//             close(errors_fd);
+//             close(results_fd);
+//             closedir(main_dir);
+//             close(output_fd);
+//             close(input_fd);
+//             if (write(1, "Error in: wait\n", 15) == -1) {
+//                 exit(-1);
+//             }
+//             exit(-1);
+//         }
 
-        //cancel alarm
-        alarm(0);
-        close(output_fd);
-        close(input_fd);
+//         //cancel alarm
+//         alarm(0);
+//         close(output_fd);
+//         close(input_fd);
 
-        //check time-out
-        if (timeout_happened) { //works?
-            timeout_happened = 0;
-            return -1;
-        }
+//         //check time-out
+//         if (timeout_happened) { //works?
+//             timeout_happened = 0;
+//             return -1;
+//         }
 
-        if (WEXITSTATUS(status) == -1) {
-            exit(-1);
-        }
+//         if (WEXITSTATUS(status) == -1) {
+//             exit(-1);
+//         }
     }
     return 0;
 }
