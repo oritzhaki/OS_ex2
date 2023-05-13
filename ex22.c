@@ -464,13 +464,13 @@ int main(int argc, char *argv[]) {
 //             write(1, "in loop: ", 9);
 //             write(1, user_entry->d_name, strlen(user_entry->d_name));
 //             write(1, "\n", 1);
-                write(1, "user entry in loop: ", 20);
-                write(1, user_entry->d_name, strlen(user_entry->d_name));
-                write(1, "|\n", 2);
+//                 write(1, "user entry in loop: ", 20);
+//                 write(1, user_entry->d_name, strlen(user_entry->d_name));
+//                 write(1, "|\n", 2);
             if (strlen(user_entry->d_name) == 1){
-                write(1, "user entry in len1: ", 20);
-                write(1, user_entry->d_name, strlen(user_entry->d_name));
-                write(1, "|\n", 2);
+//                 write(1, "user entry in len1: ", 20);
+//                 write(1, user_entry->d_name, strlen(user_entry->d_name));
+//                 write(1, "|\n", 2);
                 continue;
             }
             if (!strcmp(".c", &user_entry->d_name[strlen(user_entry->d_name) - 2])) {
@@ -485,16 +485,16 @@ int main(int argc, char *argv[]) {
                     closedir(main_dir);
                     closedir(user_dir);
                     if (write(1, "Error in: stat\n", 15) == -1){
-                        write(1, "user entry in stat: ", 20);
-                        write(1, user_entry->d_name, strlen(user_entry->d_name));
-                        write(1, "|\n", 2);
+//                         write(1, "user entry in stat: ", 20);
+//                         write(1, user_entry->d_name, strlen(user_entry->d_name));
+//                         write(1, "|\n", 2);
                         return -1;
                     }
                 }
                 if (!S_ISDIR(folder_stat.st_mode)){
-                    write(1, "user entry in SDIR: ", 20);
-                    write(1, user_entry->d_name, strlen(user_entry->d_name));
-                    write(1, "|\n", 2);
+//                     write(1, "user entry in SDIR: ", 20);
+//                     write(1, user_entry->d_name, strlen(user_entry->d_name));
+//                     write(1, "|\n", 2);
                     break;
                 }
             }
