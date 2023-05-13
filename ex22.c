@@ -483,7 +483,7 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 if (!S_ISDIR(folder_stat.st_mode)){
-                    write(1, "before break\n", 15);
+                    write(1, "before break\n", 13);
                     break;
                 }
             }
