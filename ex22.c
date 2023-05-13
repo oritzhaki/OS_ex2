@@ -467,7 +467,7 @@ int main(int argc, char *argv[]) {
             if (strlen(user_entry->d_name) == 1){
                 write(1, "user entry in len1: ", 20);
                 write(1, user_entry->d_name, strlen(user_entry->d_name));
-                write(1, "\n", 1);
+                write(1, "|\n", 2);
                 continue;
             }
             if (!strcmp(".c", &user_entry->d_name[strlen(user_entry->d_name) - 2])) {
