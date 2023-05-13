@@ -493,7 +493,7 @@ int main(int argc, char *argv[]) {
         write(1, user_entry->d_name, strlen(user_entry->d_name));
         write(1, "\n", 1);
         
-        if (!user_entry || user_entry == NULL){//no c file, move on to other user  -c_flag 
+        if (!user_entry){//no c file, move on to other user  -c_flag 
             char full_result[150];
             memset(full_result, 0, sizeof(full_result));
             strcpy(full_result, entry->d_name);
