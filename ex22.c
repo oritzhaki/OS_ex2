@@ -461,9 +461,9 @@ int main(int argc, char *argv[]) {
 //                     break; // c file found
 //                 }
 //             }
-            write(1, "in loop: ", 9);
-            write(1, user_entry->d_name, strlen(user_entry->d_name));
-            write(1, "\n", 1);
+//             write(1, "in loop: ", 9);
+//             write(1, user_entry->d_name, strlen(user_entry->d_name));
+//             write(1, "\n", 1);
             if (strlen(user_entry->d_name) == 1){
                 continue;
             }
@@ -483,12 +483,17 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 if (!S_ISDIR(folder_stat.st_mode)){
-                    write(1, "before break\n", 13);
+//                     write(1, "before break\n", 13);
                     break;
                 }
             }
         }
-        if (!user_entry){//no c file, move on to other user  -c_flag 
+        
+        write(1, "user entry out of loop: ", 24);
+        write(1, user_entry->d_name, strlen(user_entry->d_name));
+        write(1, "\n", 1);
+        
+        if (!user_entry || user_entry == NULL){//no c file, move on to other user  -c_flag 
             char full_result[150];
             memset(full_result, 0, sizeof(full_result));
             strcpy(full_result, entry->d_name);
