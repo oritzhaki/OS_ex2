@@ -496,11 +496,9 @@ int main(int argc, char *argv[]) {
             }
             continue;
         }
-        
-        char c_file[300];
-        strcpy(c_file, full_entry_path);
-        strcat(c_file, "/");
-        strcat(c_file, user_entry->d_name);
+     
+        strcat(full_entry_path, "/");
+        strcat(full_entry_path, user_entry->d_name);
 
         //close user folder
         closedir(user_dir);
