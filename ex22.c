@@ -468,7 +468,7 @@ int main(int argc, char *argv[]) {
                 //check that not directory
                 strcpy(c_file, full_entry_path);
                 strcat(c_file, "/");
-                strcat(c_file,file_name);
+                strcat(c_file,user_entry->d_name);
                 if (stat(c_file, &folder_stat) == -1) {
                     close(results_fd);
                     close(errors_fd);
