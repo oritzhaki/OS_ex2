@@ -461,6 +461,9 @@ int main(int argc, char *argv[]) {
 //                     break; // c file found
 //                 }
 //             }
+            write(1, "in loop: ", 9);
+            write(1, user_entry->d_name, strlen(user_entry->d_name));
+            write(1, "\n", 1);
             if (strlen(user_entry->d_name) == 1){
                 continue;
             }
@@ -475,11 +478,14 @@ int main(int argc, char *argv[]) {
                     close(errors_fd);
                     closedir(main_dir);
                     closedir(user_dir);
-                    if (write(1, "Error in: stat\n", 15) == -1)
+                    if (write(1, "Error in: stat\n", 15) == -1){
                         return -1;
+                    }
                 }
-                if (!S_ISDIR(folder_stat.st_mode))
+                if (!S_ISDIR(folder_stat.st_mode)){
+                    write(1, "before break\n", 15);
                     break;
+                }
             }
         }
         if (!user_entry){//no c file, move on to other user  -c_flag 
