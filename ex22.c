@@ -469,7 +469,7 @@ int main(int argc, char *argv[]) {
                 char path[200];
                 strcpy(path, full_entry_path);
                 strcat(path, "/");
-                strcat(path, dirent->d_name);
+                strcat(path, user_entry->d_name);
                 if (stat(path, &folder_stat) == -1) {
                     close(results_fd);
                     close(errors_fd);
@@ -497,8 +497,10 @@ int main(int argc, char *argv[]) {
             continue;
         }
         
-        strcat(full_entry_path, "/");
-        strcat(full_entry_path, dirent->d_name);
+        char c_file[300];
+        strcpy(c_file, full_entry_path);
+        strcat(c_file, "/");
+        strcat(c_file, user_entry->d_name);
 
         //close user folder
         closedir(user_dir);
