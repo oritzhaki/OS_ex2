@@ -449,20 +449,39 @@ int main(int argc, char *argv[]) {
         char c_file[300];
         struct dirent *user_entry;
         while ((user_entry = readdir(user_dir)) != NULL) {
-            if (user_entry->d_type == DT_REG) { // check if the entry is a regular file
-                const char* file_name = user_entry->d_name;
-                const size_t name_len = strlen(file_name);
-                if (name_len >= 2 && strcmp(file_name + name_len - 2, ".c") == 0) {
-                    //memset(c_file, 0, sizeof(c_file));
-                    strcpy(c_file, full_entry_path);
-                    strcat(c_file, "/");
-                    strcat(c_file,file_name);
-                    c_flag = 0;
-                    break; // c file found
+//             if (user_entry->d_type == DT_REG) { // check if the entry is a regular file
+//                 const char* file_name = user_entry->d_name;
+//                 const size_t name_len = strlen(file_name);
+//                 if (name_len >= 2 && strcmp(file_name + name_len - 2, ".c") == 0) {
+//                     //memset(c_file, 0, sizeof(c_file));
+//                     strcpy(c_file, full_entry_path);
+//                     strcat(c_file, "/");
+//                     strcat(c_file,file_name);
+//                     c_flag = 0;
+//                     break; // c file found
+//                 }
+//             }
+            if (strlen(user_entry->d_name) == 1){
+                continue;
+            }
+            if (!strcmp(".c", &user_entry->d_name[strlen(user_entry->d_name) - 2])) {
+                //check that not directory
+                strcpy(c_file, full_entry_path);
+                strcat(c_file, "/");
+                strcat(c_file,file_name);
+                if (stat(c_file, &folder_stat) == -1) {
+                    close(results_fd);
+                    close(errors_fd);
+                    closedir(main_dir);
+                    closedir(user_dir);
+                    if (write(1, "Error in: stat\n", 15) == -1)
+                        return -1;
                 }
+                if (!S_ISDIR(folder_stat.st_mode))
+                    break;
             }
         }
-        if (c_flag){//no c file, move on to other user
+        if (!user_entry){//no c file, move on to other user  -c_flag 
             char full_result[150];
             memset(full_result, 0, sizeof(full_result));
             strcpy(full_result, entry->d_name);
