@@ -504,7 +504,7 @@ int main(int argc, char *argv[]) {
         closedir(user_dir);
 
         // Compile the user program
-        int outcome = compile_user_program(main_dir, c_file, errors_fd, results_fd);
+        int outcome = compile_user_program(main_dir, full_entry_path, errors_fd, results_fd);
         if (outcome) {
             char full_result[150];
             memset(full_result, 0, sizeof(full_result));
