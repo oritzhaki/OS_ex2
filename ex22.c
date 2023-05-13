@@ -445,8 +445,8 @@ int main(int argc, char *argv[]) {
         }
 
         // Check if the directory found contains a C file
-        int c_flag = 1;
-        char c_file[300];
+//         int c_flag = 1;
+//         char c_file[300];
         struct dirent *user_entry;
         while ((user_entry = readdir(user_dir)) != NULL) {
 //             if (user_entry->d_type == DT_REG) { // check if the entry is a regular file
@@ -466,10 +466,11 @@ int main(int argc, char *argv[]) {
             }
             if (!strcmp(".c", &user_entry->d_name[strlen(user_entry->d_name) - 2])) {
                 //check that not directory
-                strcpy(c_file, full_entry_path);
-                strcat(c_file, "/");
-                strcat(c_file,user_entry->d_name);
-                if (stat(c_file, &folder_stat) == -1) {
+                char path[200];
+                strcpy(path, full_entry_path);
+                strcat(path, "/");
+                strcat(path, dirent->d_name);
+                if (stat(path, &folder_stat) == -1) {
                     close(results_fd);
                     close(errors_fd);
                     closedir(main_dir);
@@ -495,6 +496,9 @@ int main(int argc, char *argv[]) {
             }
             continue;
         }
+        
+        strcat(full_entry_path, "/");
+        strcat(full_entry_path, dirent->d_name);
 
         //close user folder
         closedir(user_dir);
