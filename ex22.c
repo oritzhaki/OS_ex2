@@ -479,6 +479,9 @@ int main(int argc, char *argv[]) {
                     closedir(main_dir);
                     closedir(user_dir);
                     if (write(1, "Error in: stat\n", 15) == -1){
+                        write(1, "user entry in stat: ", 20);
+                        write(1, user_entry->d_name, strlen(user_entry->d_name));
+                        write(1, "\n", 1);
                         return -1;
                     }
                 }
@@ -489,9 +492,9 @@ int main(int argc, char *argv[]) {
             }
         }
         
-        write(1, "user entry out of loop: ", 24);
-        write(1, user_entry->d_name, strlen(user_entry->d_name));
-        write(1, "\n", 1);
+//         write(1, "user entry out of loop: ", 24);
+//         write(1, user_entry->d_name, strlen(user_entry->d_name));
+//         write(1, "\n", 1);
         
         if (!user_entry){//no c file, move on to other user  -c_flag 
             char full_result[150];
