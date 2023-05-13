@@ -14,6 +14,7 @@
 #include <dirent.h>
 #include <signal.h>
 #include <sys/time.h>
+#include <sys/resource.h>
 
 int timeout_happened = 0;
 
