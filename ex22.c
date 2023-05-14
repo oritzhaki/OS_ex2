@@ -483,7 +483,7 @@ int main(int argc, char *argv[]) {
         }
 
         // Check if the directory found contains a C file
-        int c_flag = 1;
+        int c_flag = 0;
         char c_file[300];
         struct dirent *user_entry;
         while ((user_entry = readdir(user_dir)) != NULL) {
@@ -492,13 +492,13 @@ int main(int argc, char *argv[]) {
                 strcpy(c_file, full_entry_path);
                 strcat(c_file, "/");
                 strcat(c_file, user_entry->d_name);
-                c_flag = 0;
+                c_flag = 1;
                 break; // if found c file there is no need to find more files
             }
         }
    
         
-        if (c_flag || (user_entry == NULL)){//no c file, move on to other user
+        if (!c_flag || !user_entry){//no c file, move on to other user
             char full_result[150];
             memset(full_result, 0, sizeof(full_result));
             strcpy(full_result, entry->d_name);
