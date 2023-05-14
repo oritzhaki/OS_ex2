@@ -483,66 +483,22 @@ int main(int argc, char *argv[]) {
         }
 
         // Check if the directory found contains a C file
-//         int c_flag = 1;
-//         char c_file[300];
+        int c_flag = 1;
+        char c_file[300];
         struct dirent *user_entry;
         while ((user_entry = readdir(user_dir)) != NULL) {
-//             if (user_entry->d_type == DT_REG) { // check if the entry is a regular file
-//                 const char* file_name = user_entry->d_name;
-//                 const size_t name_len = strlen(file_name);
-//                 if (name_len >= 2 && strcmp(file_name + name_len - 2, ".c") == 0) {
-//                     //memset(c_file, 0, sizeof(c_file));
-//                     strcpy(c_file, full_entry_path);
-//                     strcat(c_file, "/");
-//                     strcat(c_file,file_name);
-//                     c_flag = 0;
-//                     break; // c file found
-//                 }
-//             }
-//             write(1, "in loop: ", 9);
-//             write(1, user_entry->d_name, strlen(user_entry->d_name));
-//             write(1, "\n", 1);
-//                 write(1, "user entry in loop: ", 20);
-//                 write(1, user_entry->d_name, strlen(user_entry->d_name));
-//                 write(1, "|\n", 2);
-            if (strlen(user_entry->d_name) == 1){
-//                 write(1, "user entry in len1: ", 20);
-//                 write(1, user_entry->d_name, strlen(user_entry->d_name));
-//                 write(1, "|\n", 2);
-                continue;
-            }
-            if (!strcmp(".c", &user_entry->d_name[strlen(user_entry->d_name) - 2])) {
-                //check that not directory
-                char path[200];
-                strcpy(path, full_entry_path);
-                strcat(path, "/");
-                strcat(path, user_entry->d_name);
-                if (stat(path, &folder_stat) == -1) {
-                    close(results_fd);
-                    close(errors_fd);
-                    closedir(main_dir);
-                    closedir(user_dir);
-                    if (write(1, "Error in: stat\n", 15) == -1){
-//                         write(1, "user entry in stat: ", 20);
-//                         write(1, user_entry->d_name, strlen(user_entry->d_name));
-//                         write(1, "|\n", 2);
-                        return -1;
-                    }
-                }
-                if (!S_ISDIR(folder_stat.st_mode)){
-//                     write(1, "user entry in SDIR: ", 20);
-//                     write(1, user_entry->d_name, strlen(user_entry->d_name));
-//                     write(1, "|\n", 2);
-                    break;
-                }
+            if (strcmp(".c", &user_entry->d_name[strlen(user_entry->d_name) - 2]) == 0 && (user_entry->d_type != DT_DIR)) {
+                memset(c_file, 0, sizeof(c_file));
+                strcpy(c_file, full_entry_path);
+                strcat(c_file, "/");
+                strcat(c_file, user_entry->d_name);
+                c_flag = 0;
+                break; // if found c file there is no need to find more files
             }
         }
+   
         
-//         write(1, "user entry out of loop: ", 24);
-//         write(1, user_entry->d_name, strlen(user_entry->d_name));
-//         write(1, "\n", 1);
-        
-        if (!user_entry){//no c file, move on to other user  -c_flag 
+        if (c_flag || (user_entry == NULL)){//no c file, move on to other user
             char full_result[150];
             memset(full_result, 0, sizeof(full_result));
             strcpy(full_result, entry->d_name);
@@ -557,14 +513,15 @@ int main(int argc, char *argv[]) {
             continue;
         }
      
-        strcat(full_entry_path, "/");
-        strcat(full_entry_path, user_entry->d_name);
+//         strcat(full_entry_path, "/");????????????????????????????????????????????
+//         strcat(full_entry_path, user_entry->d_name);
 
         //close user folder
         closedir(user_dir);
 
         // Compile the user program
-        int outcome = compile_user_program(main_dir, full_entry_path, errors_fd, results_fd);
+//         int outcome = compile_user_program(main_dir, full_entry_path, errors_fd, results_fd);
+        int outcome = compile_user_program(main_dir, c_file, errors_fd, results_fd);
         if (outcome) {
             char full_result[150];
             memset(full_result, 0, sizeof(full_result));
